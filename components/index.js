@@ -6,6 +6,7 @@ import Options from './Options.js';
 import Results from './Results.js';
 import Timeline from './Timeline.js';
 import Fireworks from './Fireworks.js';
+import getCPUMove from '../helper_functions/getCPUMove.js';
 
 class App extends Component {
     constructor(props) {
@@ -33,7 +34,7 @@ class App extends Component {
     optionClicked = option => {
         this.setState({gifs: {user: null, cpu: null}});
         setTimeout(async () => {
-            const cpu_move = await this.getCPUMove();
+            const cpu_move = await getCPUMove(this.state.timeline);
             const winner = this.getWinner(option, cpu_move.move);
             this.setState({
                 score: this.getNewScore(winner),
@@ -54,35 +55,6 @@ class App extends Component {
         const user_result = winner === 'draw' ? "It's a draw" : (winner === 'user' ? 'You win' : 'You lost');
         const result_comparsion = winner === 'draw' ? 'equals' : (winner === 'user' ? 'beats' : 'loses to');
         return  this.capitalizeLetter(user) + ' '+result_comparsion+' '+this.capitalizeLetter(cpu)+'. ' + user_result;
-    }
-
-    getCPUMove = () => {
-        return new Promise((resolve, reject) => {
-            const options_by_first_letter = {
-                R: 'rock',
-                P: 'paper',
-                S: 'scissors',
-            };
-            fetch('https://smartplay.afiniti.com/v1/play/' + this.getLastTenMovements()).then(function(response) {
-                return response.json();
-            })
-            .then(function(myJson) {
-                resolve({
-                    move: options_by_first_letter[myJson.nextBestMove],
-                    message: myJson.reason
-                });
-            });
-        });
-    }
-
-    getLastTenMovements = () => {
-        let results = '';
-        for (let i = 0; i < 10; i++) {
-            if (this.state.timeline[i]) {
-                results += this.state.timeline[i].user[0].toUpperCase();
-            }
-        };
-        return results;
     }
 
     getNewScore = (winner) => {
