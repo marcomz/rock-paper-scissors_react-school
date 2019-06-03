@@ -5,6 +5,7 @@ import Title from './Title.js';
 import Options from './Options.js';
 import Results from './Results.js';
 import Timeline from './Timeline.js';
+import Fireworks from './Fireworks.js';
 
 class App extends Component {
     constructor(props) {
@@ -14,7 +15,8 @@ class App extends Component {
             timeline: [],
             cpu_message: "I'm gonna show you how great I am!",
             gifs: {user: null, cpu: null},
-            result_message: '...'
+            result_message: '...',
+            show_fireworks: false
         };
     }
 
@@ -39,8 +41,8 @@ class App extends Component {
                 cpu_message: cpu_move.message,
                 gifs: {user: this.getGif(winner==='user'), cpu: this.getGif(winner==='cpu')},
                 result_message: this.getResultMessage(option, cpu_move.move, winner),
+                show_fireworks: (winner === 'user') ? true : false
             });
-            document.getElementById('fireworks').className = (winner === 'user') ? 'pyro' : '';
         },1);
     }
 
@@ -121,7 +123,8 @@ class App extends Component {
 
     render() {
         return (
-            <div className="app">
+            <div className='app'>
+                {this.state.show_fireworks ? <Fireworks /> : null}
                 <Title />
                 <Options optionClicked={this.optionClicked} />
                 <p className='screen_message'>{this.state.result_message}</p>
