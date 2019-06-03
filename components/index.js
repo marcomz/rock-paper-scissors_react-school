@@ -42,7 +42,7 @@ class App extends Component {
                 cpu_message: cpu_move.message,
                 gifs: {user: this.getGif(winner==='user'), cpu: this.getGif(winner==='cpu')},
                 result_message: this.getResultMessage(option, cpu_move.move, winner),
-                show_fireworks: (winner === 'user') ? true : false
+                show_fireworks: winner === 'user'
             });
         },1);
     }
